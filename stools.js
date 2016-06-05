@@ -112,7 +112,7 @@ class Some {
 
   map(fn) {
     let res = fn(this.value);
-    if(res == null || x == undefined) {
+    if(res == null || res == undefined) {
       return new None()
     }
     return new Some(res);
@@ -136,22 +136,43 @@ class Some {
 
 class Maybe {
 
-  static Some(x) {
-    return new Some(x)
-  }
+  static Some(x) { return new Some(x); }
 
-  static None() {
-    return new None()
-  }
+  static None() { return new None(); }
 
   static fromNullable(x) {
-    return (x !== null && x !== undefined) ? Maybe.Some(x) : Maybe.None();
+    return (x !== null && x !== undefined)
+      ? Maybe.Some(x)
+      : Maybe.None();
   }
 
-  static of(x) {
-    return Maybe.Some(x);
+  static of(x) { return Maybe.Some(x); }
+}
+
+// ================ Exceptions ================
+
+class ExtendableException extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+    this.message = message;
+    Error.captureStackTrace(this, this.constructor.name)
   }
 }
+
+class NoSuchElementException extends ExtendableException {
+  constructor(message) {
+    super(message);
+  }
+}
+
+class UserException extends ExtendableException {
+  constructor(message) {
+    super(message);
+  }
+}
+
+
 
 // ================ Either ================
 class Left {
@@ -160,25 +181,15 @@ class Left {
     Object.defineProperty(this, "value", { get: () => err }) // sortie
   }
 
-  map() {
-    return this;
-  }
+  map() { return this; }
 
-  fmap (fn) { // flatMap, fmap
-    return this; // too verifiy
-  }
+  fmap (fn) { return this; }
 
-  getOrElse(value) {
-    return value;
-  }
+  getOrElse(value) {return value; }
 
-  orElse(fn) {
-    return fn(this.value);
-  }
+  orElse(fn) { return fn(this.value); }
 
-  cata(leftFn, rightFn) {
-    return leftFn(this.value)
-  }
+  cata(leftFn, rightFn) { return leftFn(this.value); }
 }
 
 class Right {
@@ -187,55 +198,40 @@ class Right {
     Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
-  map(fn) {
-    return new Right(fn(this.value));
-  }
+  map(fn) { return new Right(fn(this.value)); }
 
-  fmap (fn) { // flatMap, fmap
+  fmap (fn) {
     let res = fn(this.value);
     if(res == null || res == undefined) {
       return new Left(res)
     }
     return new Right(res);
-
   }
 
-  getOrElse() {
-    return this.value;
-  }
+  getOrElse() { return this.value; }
 
-  orElse() {
-    return this;
-  }
+  orElse() { return this; }
 
-  cata(leftFn, rightFn) {
-    return rightFn(this.value)
-  }
+  cata(leftFn, rightFn) { return rightFn(this.value); }
 }
 
 class Either {
-
   constructor(x) {
     const value = x;
     Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
-  static Left(x) {
-    return new Left(x)
-  }
+  static Left(x) { return new Left(x); }
 
-  static Right(x) {
-    return new Right(x)
-  }
+  static Right(x) { return new Right(x); }
 
   static fromNullable(x) {
-    return (x !== null && x !== undefined) ? Either.Right(x) : Either.Left();
+    return (x !== null && x !== undefined)
+      ? Either.Right(x)
+      : Either.Left();
   }
 
-  static of(x) {
-    return Either.Right(x);
-  }
-
+  static of(x) { return Either.Right(x); }
 }
 
 
@@ -248,17 +244,11 @@ class Success {
     Object.defineProperty(this, "value", { get: () => err }) // sortie
   }
 
-  map(fn) {
-    return new Success(fn(this.value));
-  }
+  map(fn) { return new Success(fn(this.value)); }
 
-  isSuccess() {
-    return true;
-  }
+  isSuccess() { return true; }
 
-  isFail() {
-    return false;
-  }
+  isFail() { return false; }
 
   ap(otherContainer) { // has to be at least a functor
     return otherContainer instanceof Fail
@@ -266,10 +256,7 @@ class Success {
       : otherContainer.map(this.value)
   }
 
-  cata(failureFn, successFn) {
-    return successFn(this.value)
-  }
-
+  cata(failureFn, successFn) { return successFn(this.value); }
 }
 
 
@@ -279,20 +266,10 @@ class Fail {
     Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
-  map() {
-    return this;
-  }
+  map() { return this; }
 
-  fmap (fn) {
-    return this;
-  }
-
-  isSuccess() {
-    return false;
-  }
-  isFail() {
-    return true;
-  }
+  isSuccess() { return false; }
+  isFail() { return true; }
 
   ap(otherContainer) { // has to be a functor
     return otherContainer instanceof Fail
@@ -300,9 +277,7 @@ class Fail {
       : this
   }
 
-  cata(failureFn, successFn) {
-    return failureFn(this.value)
-  }
+  cata(failureFn, successFn) { return failureFn(this.value); }
 
 }
 
@@ -312,15 +287,9 @@ class Validation {
     Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
-  static Success(x) {
-    return new Success(x)
-  }
+  static Success(x) { return new Success(x); }
 
-  static Fail(x) {
-    return new Fail(x)
-  }
+  static Fail(x) { return new Fail(x); }
 
-  static of(x) {
-    return Validation.Success(x);
-  }
+  static of(x) { return Validation.Success(x); }
 }
