@@ -16,46 +16,15 @@ checkDay = (dayNumber) => {
   }
 }
 
-checkDay(42)
-checkDay(42).ap(checkMonth(42)).ap(checkMonth(42))
-checkDay(42).ap(checkMonth(12)).ap(checkMonth(42))
+Validation.of(day => month => `Day: ${day} Month: ${month}`)
+    .ap(checkDay(5))
+    .ap(checkMonth(12))
 
-//------------
+checkDayAndMonth = (day, month) => Validation.of(day => month => `Day: ${day} Month: ${month}`)
+  .ap(checkDay(day))
+  .ap(checkMonth(month))
 
-
-checkMonthOnData = (data) => {
-  console.log('checkMonth', data)
-  try {
-    let month = getMonthName(data.month);
-    return Validation.Success(month)
-  } catch (err) {
-    return Validation.Fail([err])
-  }
-}
-
-checkDayOnData = (data) => {
-  console.log('checkDay', data)
-  try {
-    let day = getDayName(data.day);
-    return Validation.Success(day)
-  } catch (err) {
-    return Validation.Fail([err])
-  }
-}
-
-checkMonthAndDay = (data) => Validation.of(
-  day => {
-    console.log('dayName:', day)
-    return month => {
-      console.log('monthName:', month)
-      return `==> ${day}:${month}`
-    };
-  }).ap(checkDayOnData(data)).ap(checkMonthOnData(data))
-
-checkMonthAndDay({day:2,month:12})
-checkMonthAndDay({day:42,month:42})
-
-checkMonthAndDay({day:42,month:42}).cata(
+checkDayAndMonth(42, 42).cata(
   failureFn = (errors) => errors.join('|'),
   successFn = (res) => res
 )

@@ -239,9 +239,9 @@ class Either {
 
 
 class Success {
-  constructor(err) {
-    const value = err;
-    Object.defineProperty(this, "value", { get: () => err }) // sortie
+  constructor(x) {
+    const value = x;
+    Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
   map(fn) { return new Success(fn(this.value)); }
@@ -261,8 +261,8 @@ class Success {
 
 
 class Fail {
-  constructor(x) {
-    const value = x;
+  constructor(err) {
+    const value = err;
     Object.defineProperty(this, "value", { get: () => value }) // sortie
   }
 
