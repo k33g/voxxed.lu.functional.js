@@ -16,6 +16,21 @@ checkDay = (dayNumber) => {
   }
 }
 
+// tester le succès de la fonction "currifiée"
+// (autant de fois qu’il y a de validations)
+Validation.of(
+    (day) =>
+      (month) => `Day: ${day} Month: ${month}`
+  )
+  .ap(checkDay(5))
+  .ap(checkMonth(12))
+  .cata(
+    failureFn = (errors) => errors.join('|'),
+    successFn = (res) => res
+  )
+
+// -------------------------------
+
 Validation.of(day => month => `Day: ${day} Month: ${month}`)
     .ap(checkDay(5))
     .ap(checkMonth(12))

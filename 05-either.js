@@ -19,6 +19,7 @@ function getDayName(da) {
    }
 }
 
+// -------------------------------
 
 giveMeMonthName = (monthNumber) => {
   try {
@@ -35,6 +36,9 @@ giveMeDayName = (dayNumber) => {
     return Either.Left(err);
   }
 };
+
+// -------------------------------
+
 
 giveMeMonthName(12).cata(
 	leftnFn= (err) => {

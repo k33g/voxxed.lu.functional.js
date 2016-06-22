@@ -1,7 +1,20 @@
+let addition = function(a,b) {  return a+b;  };
 
+    // currying addition 
+let add = function(a) { 
+  return function(b) { 
+    return a + b; 
+  }
+ };
 
+console.log(add(40)(2))
+  incrementBy1 = add(1)
+ incrementBy2 = add(2)
+  incrementBy1(41)  
 
-
+let arr1 = [100, 200, 300, 400, 500];
+  arr1.map((x)=>{ return x + 1 })
+console.log(  arr1.map(incrementBy1))
 
 // === composition ===
 

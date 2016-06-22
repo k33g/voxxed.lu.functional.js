@@ -1,11 +1,13 @@
-
 panda = Functor.of('🐼')
 
 addLapinouBuddy = (me) => me + '🐰'
-buddies = panda.map(addLapinouBuddy)
 addCatBuddy = (me) => me + '🐱'
 
-buddies.map(addCatBuddy)
+panda.map(addLapinouBuddy)
+
+panda
+  .map(addLapinouBuddy)
+  .map(addCatBuddy)
 
 // -------------------------------
 
@@ -15,6 +17,7 @@ divideByThree = (value) => value / 3;
 
 a = Functor.of(23.2);
 
+// chain
 b = a
   .map(addOne)
   .map(addOne)

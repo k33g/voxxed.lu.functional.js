@@ -70,7 +70,7 @@ class Monad {
     return Monad.of(fn(this.value));
   }
   /* So, I'm a monad */
-  fmap (fn) { // flatMap, bind
+  bind (fn) {
     return fn(this.value);
   }
 }
@@ -87,7 +87,7 @@ class None {
     return this;
   }
 
-  fmap (fn) { // flatMap, fmap
+  bind (fn) {
     return this.value;
   }
 
@@ -118,7 +118,7 @@ class Some {
     return new Some(res);
   }
 
-  fmap (fn) { // flatMap, fmap
+  bind (fn) {
     return fn(this.value);
   }
 
@@ -183,8 +183,6 @@ class Left {
 
   map() { return this; }
 
-  fmap (fn) { return this; }
-
   getOrElse(value) {return value; }
 
   orElse(fn) { return fn(this.value); }
@@ -199,14 +197,6 @@ class Right {
   }
 
   map(fn) { return new Right(fn(this.value)); }
-
-  fmap (fn) {
-    let res = fn(this.value);
-    if(res == null || res == undefined) {
-      return new Left(res)
-    }
-    return new Right(res);
-  }
 
   getOrElse() { return this.value; }
 
@@ -292,4 +282,46 @@ class Validation {
   static Fail(x) { return new Fail(x); }
 
   static of(x) { return Validation.Success(x); }
+}
+
+bob = {
+  id:'bob',
+  address:{
+    email:'bob@github.com',
+    country:'US'
+  }
+};
+
+john = {
+  id:'john',
+  address:{
+    country:'US'
+  }
+};
+
+jane = {
+  id:'jane'
+};
+
+buddies = [bob, john, jane];
+
+function getMonthName(mo) {
+   mo = mo-1; // Adjust month number for array index (1=Jan, 12=Dec)
+   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+      "Aug", "Sep", "Oct", "Nov", "Dec"];
+   if (months[mo] !== undefined) {
+      return months[mo];
+   } else {
+      throw new UserException("Invalid Month Number");
+   }
+}
+
+function getDayName(da) {
+   da = da-1; // Adjust day number for array index
+   var days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+   if (days[da] !== undefined) {
+      return days[da];
+   } else {
+      throw new UserException("Invalid Day Number");
+   }
 }
